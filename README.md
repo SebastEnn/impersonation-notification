@@ -76,7 +76,7 @@ This will compile the code and create a JAR file in the `target` directory named
 
 8. (Optional) To use the custom email theme:
    - Go to **Realm Settings** > **Themes**
-   - Select `impersonation_notification` from the **Email Theme** dropdown
+   - Select `theme_impersonation_notification` from the **Email Theme** dropdown
    - Click **Save**
 
 ## How It Works
