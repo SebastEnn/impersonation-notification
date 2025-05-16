@@ -6,7 +6,7 @@
 
     <groupId>me.test</groupId>
     <artifactId>impersonation-notification</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <properties>
         <keycloak.version>26.2.4</keycloak.version>
