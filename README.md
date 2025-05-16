@@ -23,7 +23,7 @@ To build the project, run the following Maven command from the project root dire
 mvn clean install
 ```
 
-This will compile the code and create a JAR file in the `target` directory named `impersonation-notification-1.0.0.jar`.
+This will compile the code and create a JAR file in the `target` directory named `impersonation-notification-1.0.1.jar`.
 
 ## Installation
 
@@ -32,7 +32,7 @@ This will compile the code and create a JAR file in the `target` directory named
 1. Copy the generated JAR file from the `target` directory to the Keycloak providers directory:
 
    ```bash
-   cp target/impersonation-notification-1.0.0.jar /path/to/keycloak/providers/
+   cp target/impersonation-notification-1.0.1.jar /path/to/keycloak/providers/
    ```
 
    Note: The exact path depends on your Keycloak installation. For a standard installation, this might be:
