@@ -18,6 +18,7 @@ import java.util.Map;
 public class ImpersonationEmailEventListener implements EventListenerProvider {
 
     private final KeycloakSession session;
+    private final Logger logger = Logger.getLogger(ImpersonationEmailEventListener.class);
 
     public ImpersonationEmailEventListener(KeycloakSession session) {
         this.session = session;
@@ -35,21 +36,18 @@ public class ImpersonationEmailEventListener implements EventListenerProvider {
     }
 
     private void handleImpersonateEvent(Event event) {
-        Logger logger = Logger.getLogger(ImpersonationEmailEventListener.class);
-
+        String userRealmId = event.getRealmId();
         String userId = event.getUserId();
-        String impersonatorId = event.getDetails().get("impersonator");
-        String impersonatorRealmName = event.getDetails().get("impersonator_realm");
-        if (userId == null || impersonatorId == null || impersonatorRealmName == null) return;
-
-        RealmModel realm = session.realms().getRealm(event.getRealmId());
-        RealmModel impersonatorRealm = session.realms().getRealmByName(impersonatorRealmName);
-        if (realm == null || impersonatorRealm == null) return;
-
+        RealmModel realm = session.realms().getRealm(userRealmId);
         UserModel user = session.users().getUserById(realm, userId);
-        UserModel impersonator = session.users().getUserByUsername(impersonatorRealm, impersonatorId);
-        if (user == null || user.getEmail() == null || user.getEmail().isEmpty() || !user.isEmailVerified()) return;
-        if (impersonator == null) return;
+        if (realm == null || user == null) return;
+        if (user.getEmail() == null || user.getEmail().isEmpty() || !user.isEmailVerified()) return;
+
+        String impersonatorRealmName = event.getDetails().get("impersonator_realm");
+        String impersonatorName = event.getDetails().get("impersonator");
+        RealmModel impersonatorRealm = session.realms().getRealmByName(impersonatorRealmName);
+        UserModel impersonator = session.users().getUserByUsername(impersonatorRealm, impersonatorName);
+        if (impersonatorRealm == null || impersonator == null) return;
 
         try {
             EmailTemplateProvider emailTemplateProvider = session
@@ -67,7 +65,6 @@ public class ImpersonationEmailEventListener implements EventListenerProvider {
             emailTemplateProvider.send(subjectKey, bodyTemplate, attributes);
 
            logger.info("Impersonation notification sent to " + user.getUsername() + " (" + user.getFirstName() + " " + user.getLastName() + ").");
-
         } catch (EmailException e) {
             logger.error("Could not send a impersonation notification to " + user.getEmail(), e);
         }
